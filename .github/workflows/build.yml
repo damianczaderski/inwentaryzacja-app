@@ -19,7 +19,7 @@ jobs:
     - name: Build with Buildozer
       uses: docker://kivy/buildozer
       with:
-        args: android debug
+        args: -v android debug
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
