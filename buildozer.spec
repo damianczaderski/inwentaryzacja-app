@@ -6,7 +6,7 @@ package.domain = org.magazyn
 source.include_exts = py,png,jpg,kv,atlas,db
 source.include_patterns = magazyn.db,bazy produktu/*
 version = 1.0
-requirements = python3==3.10,kivy
+requirements = python3,kivy
 orientation = portrait
 fullscreen = 0
 android.permissions = WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
