@@ -13,8 +13,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build with Buildozer
-      uses: ArtemSBulgakov/buildozer-action@v1
-      id: buildozer
+      uses: Readymaster/buildozer-action@v16
       with:
         command: buildozer -v android debug
 
