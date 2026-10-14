@@ -12,10 +12,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Fix permissions
+      run: |
+        sudo chown -R $USER:$USER $PWD
+
     - name: Build with Buildozer
-      uses: Readymaster/buildozer-action@v16
+      uses: docker://kivy/buildozer
       with:
-        command: buildozer -v android debug
+        args: android debug
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
