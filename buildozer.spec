@@ -1,4 +1,5 @@
 [app]
+source.dir = .
 title = System Inwentaryzacji
 package.name = inwentaryzacja
 package.domain = org.magazyn
