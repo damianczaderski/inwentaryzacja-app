@@ -42,7 +42,11 @@ jobs:
           autoconf \
           libtool \
           pkg-config \
-          openjdk-17-jdk
+          openjdk-17-jdk \
+          libffi-dev \
+          libltdl-dev \
+          libssl-dev \
+          libsqlite3-dev
 
     - name: Install Buildozer and Cython
       run: |
@@ -51,7 +55,7 @@ jobs:
 
     - name: Build with Buildozer
       run: |
-        buildozer -v android debug
+        buildozer -v android debug || (echo "=== OSTATNIE LINIE LOGU BUILDOZERA ===" && tail -n 100 .buildozer/*.log || true) && exit 1
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
