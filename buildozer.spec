@@ -6,7 +6,7 @@ package.domain = org.magazyn
 source.include_exts = py,png,jpg,kv,atlas,db
 source.include_patterns = magazyn.db,bazy produktu/*
 version = 1.0
-requirements = python3,kivy
+requirements = python3==3.11,kivy
 orientation = portrait
 fullscreen = 0
 android.permissions = WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
@@ -15,6 +15,7 @@ android.minapi = 21
 android.ndk = 25b
 android.archs = arm64-v8a
 android.accept_sdk_license = True
+p4s_branch = v2024.09.0
 
 [buildozer]
 log_level = 2
