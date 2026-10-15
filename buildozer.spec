@@ -18,11 +18,13 @@ source.include_exts = py,png,jpg,kv,atlas,db
 # (list) List of inclusions
 source.include_patterns = magazyn.db,bazy produktu/*
 
+# (list) Source files to exclude (let it be empty to exclude none)
+source.exclude_patterns = license,images/*.jpg,*/test/*,*.pyc
+
 # (str) Application versioning
 version = 1.0
 
 # (list) Application requirements
-# Ściśle powiązane wersje Pythona 3.11.7 bez zbędnych modułów testowych
 requirements = python3==3.11.7,hostpython3==3.11.7,kivy,sqlite3
 
 # (str) Supported orientations
@@ -43,7 +45,7 @@ android.minapi = 21
 # (str) Android NDK version to use
 android.ndk = 25b
 
-# (list) Architectural build targets - jedna architektura dla maksymalnej stabilności
+# (list) Architectural build targets
 android.archs = arm64-v8a
 
 # (bool) Automatically accept SDK license
