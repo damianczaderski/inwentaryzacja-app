@@ -31,7 +31,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v6-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v7-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -73,7 +73,16 @@ jobs:
 
     - name: Build with Buildozer
       run: |
+        # Usunięcie testów Pythona przed i w trakcie budowania, jeśli się pojawią
+        (while true; do
+          find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
+          sleep 2
+        done) &
+        WATCHER_PID=$!
+
         buildozer -v android debug || (echo "=== BŁĄD KOMPILACJI - OSTATNIE LINIE LOGU ===" && tail -n 100 .buildozer/*.log || true) && exit 1
+
+        kill $WATCHER_PID 2>/dev/null || true
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
