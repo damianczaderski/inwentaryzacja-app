@@ -31,7 +31,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v7-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v8-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -69,11 +69,11 @@ jobs:
     - name: Install Buildozer and Cython
       run: |
         pip install --upgrade pip
-        pip install Cython==0.29.36 buildozer
+        pip install Cython==3.0.11 buildozer
 
     - name: Build with Buildozer
       run: |
-        # Usunięcie testów Pythona przed i w trakcie budowania, jeśli się pojawią
+        # Czyszczenie testów w tle na wypadek, gdyby stary cache próbował je przemycić
         (while true; do
           find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
           sleep 2
