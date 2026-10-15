@@ -22,11 +22,8 @@ source.include_patterns = magazyn.db,bazy produktu/*
 version = 1.0
 
 # (list) Application requirements
-# Jawnie i spójnie spięta wersja Python3 oraz hostpython3, aby uniknąć rozbieżności wersji
+# Ściśle powiązane wersje Pythona 3.11.7 bez zbędnych modułów testowych
 requirements = python3==3.11.7,hostpython3==3.11.7,kivy,sqlite3
-
-# (str) Custom icon (not used yet)
-# icon.filename = %(source.dir)s/data/icon.png
 
 # (str) Supported orientations
 orientation = portrait
@@ -46,7 +43,7 @@ android.minapi = 21
 # (str) Android NDK version to use
 android.ndk = 25b
 
-# (list) Architectural build targets - zostawiamy na razie jedną architekturę dla stabilności budowania
+# (list) Architectural build targets - jedna architektura dla maksymalnej stabilności
 android.archs = arm64-v8a
 
 # (bool) Automatically accept SDK license
