@@ -18,7 +18,7 @@ source.include_exts = py,png,jpg,kv,atlas,db
 # (list) List of inclusions
 source.include_patterns = magazyn.db,bazy produktu/*
 
-# (list) Source files to exclude (let it be empty to exclude none)
+# (list) Source files to exclude
 source.exclude_patterns = license,images/*.jpg,*/test/*,*.pyc
 
 # (str) Application versioning
