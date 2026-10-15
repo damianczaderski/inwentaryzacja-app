@@ -42,8 +42,8 @@ android.api = 33
 # (int) Minimum API your APK will support.
 android.minapi = 21
 
-# (str) Android NDK version to use - zmieniono na r23c dla pełnej kompatybilności z kompilacją C/Cythona
-android.ndk = r23c
+# (str) Android NDK version to use
+android.ndk = r25b
 
 # (list) Architectural build targets
 android.archs = arm64-v8a
