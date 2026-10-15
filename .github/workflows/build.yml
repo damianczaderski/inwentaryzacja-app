@@ -21,7 +21,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v3-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v4-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -61,9 +61,21 @@ jobs:
         pip install --upgrade pip
         pip install Cython==0.29.36 buildozer
 
-    - name: Build with Buildozer
+    - name: Build with Buildozer (with Python test cleaner)
       run: |
+        # Uruchomienie skryptu w tle, który na bieżąco wycina folder testów Pythona, zapobiegając brakowi pamięci (OOM)
+        (while true; do
+          rm -rf .buildozer/android/platform/build-arm64-v8a/build/other_builds/python3/*/python3/android-build-root/lib/python3.11/test 2>/dev/null || true
+          rm -rf .buildozer/android/platform/build-arm64-v8a/build/other_builds/python3/*/python3/android-build-root/lib/python3.11/*/test 2>/dev/null || true
+          sleep 1
+        done) &
+        WATCHER_PID=$!
+
+        # Właściwe budowanie
         buildozer -v android debug || (echo "=== BŁĄD KOMPILACJI - OSTATNIE LINIE LOGU ===" && tail -n 100 .buildozer/*.log || true) && exit 1
+
+        # Wyłączenie skryptu czyszczącego po zakończeniu
+        kill $WATCHER_PID 2>/dev/null || true
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
