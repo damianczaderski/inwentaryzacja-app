@@ -14,7 +14,9 @@ jobs:
 
     - name: Set up Swap Space (prevent OOM crashes)
       run: |
-        sudo fallocate -l 4G /swapfile
+        sudo swapoff /swapfile || true
+        sudo rm -f /swapfile
+        sudo dd if=/dev/zero of=/swapfile bs=1M count=4096 status=none
         sudo chmod 600 /swapfile
         sudo mkswap /swapfile
         sudo swapon /swapfile
@@ -29,7 +31,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v5-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v6-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
