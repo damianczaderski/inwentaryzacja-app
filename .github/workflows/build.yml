@@ -17,6 +17,14 @@ jobs:
       with:
         python-version: '3.10'
 
+    - name: Cache Buildozer directory
+      uses: actions/cache@v4
+      with:
+        path: .buildozer
+        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-buildozer-
+
     - name: Install system dependencies
       run: |
         sudo apt-get update
@@ -55,7 +63,7 @@ jobs:
 
     - name: Build with Buildozer
       run: |
-        buildozer -v android debug || (echo "=== OSTATNIE LINIE LOGU BUILDOZERA ===" && tail -n 100 .buildozer/*.log || true) && exit 1
+        buildozer -v android debug || (echo "=== BŁĄD KOMPILACJI - OSTATNIE LINIE LOGU ===" && tail -n 100 .buildozer/*.log || true) && exit 1
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
