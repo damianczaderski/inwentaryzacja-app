@@ -42,8 +42,8 @@ android.api = 33
 # (int) Minimum API your APK will support
 android.minapi = 21
 
-# (str) Android NDK version to use - wersja r23c rozwiązuje błąd __GNUC_PREREQ
-android.ndk = r23c
+# (str) Android NDK version to use
+android.ndk = r28c
 
 # (list) Architectural build targets
 android.archs = arm64-v8a
