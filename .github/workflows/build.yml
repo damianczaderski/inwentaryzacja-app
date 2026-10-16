@@ -31,7 +31,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v11-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v12-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -70,6 +70,17 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install Cython==3.0.11 buildozer
+
+    - name: Pre-download and setup Android NDK
+      run: |
+        mkdir -p /home/runner/.buildozer/android/platform
+        cd /home/runner/.buildozer/android/platform
+        echo "Pobieranie NDK r28c..."
+        wget -q https://dl.google.com/android/repository/android-ndk-r28c-linux.zip
+        echo "Rozpakowywanie NDK..."
+        unzip -q android-ndk-r28c-linux.zip
+        mv android-ndk-r28c android-ndk
+        rm android-ndk-r28c-linux.zip
 
     - name: Build with Buildozer
       run: |
