@@ -81,7 +81,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v24-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v25-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -94,9 +94,9 @@ jobs:
         done) &
         WATCHER_PID=$!
 
-        # Wymuszenie flag CFLAGS dla kompilatora Clang w NDK, aby naprawić błąd __GNUC_PREREQ
-        export CFLAGS="-D__GNUC_PREREQ(x,y)=0"
-        export CPPFLAGS="-D__GNUC_PREREQ(x,y)=0"
+        # Poprawione flagi bez błędnych nawiasów dla powłoki systemowej
+        export CFLAGS="-Wno-error=implicit-function-declaration"
+        export CPPFLAGS="-Wno-error=implicit-function-declaration"
 
         buildozer -v android debug || (echo "=== BŁĄD KOMPILACJI - OSTATNIE LINIE LOGU ===" && tail -n 100 .buildozer/*.log || true) && exit 1
 
