@@ -42,8 +42,8 @@ android.api = 33
 # (int) Minimum API your APK will support
 android.minapi = 21
 
-# (str) Android NDK version to use - wpis bez litery "r" zapobiega błędu z podwójnym "rr"
-android.ndk = 28c
+# (str) Android NDK version to use - wersja r25b zapewniająca poprawną kompilację Kivy
+android.ndk = r25b
 
 # (list) Architectural build targets
 android.archs = arm64-v8a
