@@ -81,7 +81,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v25-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v26-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -93,10 +93,6 @@ jobs:
           sleep 2
         done) &
         WATCHER_PID=$!
-
-        # Poprawione flagi bez błędnych nawiasów dla powłoki systemowej
-        export CFLAGS="-Wno-error=implicit-function-declaration"
-        export CPPFLAGS="-Wno-error=implicit-function-declaration"
 
         buildozer -v android debug || (echo "=== BŁĄD KOMPILACJI - OSTATNIE LINIE LOGU ===" && tail -n 100 .buildozer/*.log || true) && exit 1
 
