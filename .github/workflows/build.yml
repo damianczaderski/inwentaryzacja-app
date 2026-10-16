@@ -27,14 +27,6 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Cache Buildozer directory
-      uses: actions/cache@v4
-      with:
-        path: .buildozer
-        key: ${{ runner.os }}-buildozer-v16-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
-        restore-keys: |
-          ${{ runner.os }}-buildozer-
-
     - name: Install system dependencies
       run: |
         sudo apt-get update
@@ -71,19 +63,27 @@ jobs:
         pip install --upgrade pip
         pip install Cython==3.0.11 buildozer
 
-    - name: Manual Setup NDK r28c (Prevent download errors)
+    - name: Manual Setup Android NDK & SDK Components (Bypass Buildozer Downloader)
       run: |
         mkdir -p /home/runner/.buildozer/android/platform
         cd /home/runner/.buildozer/android/platform
+        
         if [ ! -d "android-ndk-r28c" ]; then
           echo "Pobieranie NDK r28c..."
           wget -q https://dl.google.com/android/repository/android-ndk-r28c-linux.zip
-          echo "Rozpakowywanie NDK..."
           unzip -q android-ndk-r28c-linux.zip
           rm android-ndk-r28c-linux.zip
         fi
         rm -rf android-ndk
         mv android-ndk-r28c android-ndk
+
+    - name: Cache Buildozer directory
+      uses: actions/cache@v4
+      with:
+        path: .buildozer
+        key: ${{ runner.os }}-buildozer-v17-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-buildozer-
 
     - name: Build with Buildozer
       run: |
