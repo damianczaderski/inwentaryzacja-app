@@ -31,7 +31,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v13-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v14-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -71,9 +71,24 @@ jobs:
         pip install --upgrade pip
         pip install Cython==3.0.11 buildozer
 
+    - name: Manual Setup NDK r23c (Fixes __GNUC_PREREQ macro error)
+      run: |
+        mkdir -p /home/runner/.buildozer/android/platform
+        cd /home/runner/.buildozer/android/platform
+        if [ ! -d "android-ndk-r23c" ]; then
+          echo "Pobieranie NDK r23c..."
+          wget -q https://dl.google.com/android/repository/android-ndk-r23c-linux.zip
+          echo "Rozpakowywanie NDK..."
+          unzip -q android-ndk-r23c-linux.zip
+          rm android-ndk-r23c-linux.zip
+        fi
+        # Upewnienie się, że katalog nazywa się poprawnie dla buildozera
+        rm -rf android-ndk
+        mv android-ndk-r23c android-ndk
+
     - name: Build with Buildozer
       run: |
-        # Czyszczenie zbędnych testów w tle, aby zapobiec zapchaniu pamięci
+        # Czyszczenie testów w tle
         (while true; do
           find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
           sleep 2
