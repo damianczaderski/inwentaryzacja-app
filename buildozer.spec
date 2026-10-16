@@ -42,8 +42,8 @@ android.api = 33
 # (int) Minimum API your APK will support
 android.minapi = 21
 
-# (str) Android NDK version to use
-android.ndk = r28c
+# (str) Android NDK version to use - WPISUJEMY SAM NUMER BEZ LITERY "r"
+android.ndk = 28c
 
 # (list) Architectural build targets
 android.archs = arm64-v8a
