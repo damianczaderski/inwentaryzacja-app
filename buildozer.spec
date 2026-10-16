@@ -51,6 +51,9 @@ android.archs = arm64-v8a
 # (bool) Automatically accept SDK license
 android.accept_sdk_license = True
 
+# Bezpośrednie przekazanie definicji makra oraz wyłączenie błędów nagłówków w Clang
+android.cflags = -include sys/cdefs.h -Wno-error=implicit-function-declaration
+
 [buildozer]
 
 # (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
