@@ -36,14 +36,14 @@ fullscreen = 0
 # (list) Permissions
 android.permissions = WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
-# (int) Target Android API, should be as high as possible.
+# (int) Target Android API
 android.api = 33
 
-# (int) Minimum API your APK will support.
+# (int) Minimum API your APK will support
 android.minapi = 21
 
-# (str) Android NDK version to use
-android.ndk = r28c
+# (str) Android NDK version to use - Podajemy SAMĄ numerację/wersję bez "r" na początku!
+android.ndk = 25b
 
 # (list) Architectural build targets
 android.archs = arm64-v8a
