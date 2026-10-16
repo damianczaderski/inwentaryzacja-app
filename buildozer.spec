@@ -42,18 +42,14 @@ android.api = 33
 # (int) Minimum API your APK will support
 android.minapi = 21
 
-# (str) Android NDK version to use
-android.ndk = 28c
+# (str) Android NDK version to use - stabilna wersja r25b dla Kivy
+android.ndk = r25b
 
 # (list) Architectural build targets
 android.archs = arm64-v8a
 
 # (bool) Automatically accept SDK license
 android.accept_sdk_license = True
-
-# Ominięcie błędów makr kompilatora Clang w nowym NDK
-android.cflags = -D__GNUC_PREREQ(x,y)=0 -Wno-error=implicit-function-declaration
-android.cppflags = -D__GNUC_PREREQ(x,y)=0
 
 [buildozer]
 
