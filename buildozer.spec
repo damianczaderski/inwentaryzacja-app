@@ -51,9 +51,6 @@ android.archs = arm64-v8a
 # (bool) Automatically accept SDK license
 android.accept_sdk_license = True
 
-# Ominięcie błędu makra w nagłówkach systemowych Clang na Ubuntu
-android.cflags = -D__GNUC_PREREQ(x,y)=0
-
 [buildozer]
 
 # (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
