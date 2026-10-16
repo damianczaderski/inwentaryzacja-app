@@ -63,7 +63,7 @@ jobs:
         pip install --upgrade pip
         pip install Cython==3.0.11 buildozer
 
-    - name: Manual Setup Android NDK r25b (Compatible with Kivy)
+    - name: Manual Setup Android NDK r25b (Bypass Download Errors)
       run: |
         mkdir -p /home/runner/.buildozer/android/platform
         cd /home/runner/.buildozer/android/platform
@@ -81,7 +81,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v21-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v23-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
