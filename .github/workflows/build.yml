@@ -63,7 +63,7 @@ jobs:
         pip install --upgrade pip
         pip install Cython==3.0.11 buildozer
 
-    - name: Manual Setup Android NDK r25b (Bypass Download Errors)
+    - name: Manual Setup Android NDK r25b
       run: |
         mkdir -p /home/runner/.buildozer/android/platform
         cd /home/runner/.buildozer/android/platform
@@ -81,7 +81,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v23-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v24-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -93,6 +93,10 @@ jobs:
           sleep 2
         done) &
         WATCHER_PID=$!
+
+        # Wymuszenie flag CFLAGS dla kompilatora Clang w NDK, aby naprawić błąd __GNUC_PREREQ
+        export CFLAGS="-D__GNUC_PREREQ(x,y)=0"
+        export CPPFLAGS="-D__GNUC_PREREQ(x,y)=0"
 
         buildozer -v android debug || (echo "=== BŁĄD KOMPILACJI - OSTATNIE LINIE LOGU ===" && tail -n 100 .buildozer/*.log || true) && exit 1
 
