@@ -55,9 +55,10 @@ jobs:
           libssl-dev \
           libsqlite3-dev
 
-    - name: Install Buildozer and Cython
+    - name: Install Buildozer, Cython and compatible Pip
       run: |
-        pip install --upgrade pip
+        # Instalacja stabilnej wersji pip, która nie powoduje błędów importu spinnerów w p4a
+        pip install "pip==23.3.1"
         pip install Cython==3.0.11 buildozer
 
     - name: Manual Setup Android NDK r25b
@@ -78,21 +79,17 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        # Zmieniono wersję na v36
-        key: ${{ runner.os }}-buildozer-v36-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        # Zmieniono wersję cache na v37, aby wymusić czysty build z nowym pipem
+        key: ${{ runner.os }}-buildozer-v37-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
     - name: Build with Buildozer
       run: |
-        # Watcher zastępuje aktualizację pip poprawną składniowo komendą 'true'
+        # Czyszczenie testów Pythona w tle, aby oszczędzić pamięć RAM
         (while true; do
           find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
-          find .buildozer/ -name "*.py" -exec grep -l "pip install" {} \; 2>/dev/null | while read file; do
-            sed -i 's/pip install -U pip/true/g' "$file" || true
-            sed -i 's/pip install --upgrade pip/true/g' "$file" || true
-          done
-          sleep 0.5
+          sleep 2
         done) &
         WATCHER_PID=$!
 
