@@ -78,26 +78,18 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        # Zmieniono wersję na v46
-        key: ${{ runner.os }}-buildozer-v46-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        # Zmieniono wersję na v47
+        key: ${{ runner.os }}-buildozer-v47-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
     - name: Build with Buildozer
       run: |
-        # Agresywny watcher w tle: blokuje aktualizację pip oraz łatka na spinner.py
+        # Agresywny watcher modyfikujący pliki natychmiastowo
         (while true; do
           find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
           
-          # Podmiana pip install -U pip / --upgrade pip na pustą komendę 'true' we wszystkich plikach python-for-android
-          find .buildozer/ -name "*.py" 2>/dev/null | while read file; do
-            if grep -q "pip install" "$file"; then
-              sed -i 's/pip install -U pip/true/g' "$file" || true
-              sed -i 's/pip install --upgrade pip/true/g' "$file" || true
-            fi
-          done
-
-          # Łatka na spinners.py
+          # Wyłapywanie i łatwienie każdego pliku spinners.py
           find .buildozer/ -name "spinners.py" 2>/dev/null | while read file; do
             if ! grep -q "open_rich_spinner" "$file"; then
               echo "" >> "$file"
@@ -106,7 +98,15 @@ jobs:
             fi
           done
 
-          sleep 0.01
+          # Blokowanie pip install -U pip w plikach sh/build
+          find .buildozer/ -name "*.py" 2>/dev/null | while read file; do
+            if grep -q "pip install" "$file"; then
+              sed -i 's/pip install -U pip/true/g' "$file" || true
+              sed -i 's/pip install --upgrade pip/true/g' "$file" || true
+            fi
+          done
+          
+          sleep 0.001
         done) &
         WATCHER_PID=$!
 
