@@ -25,7 +25,6 @@ source.exclude_patterns = license,images/*.jpg,*/test/*,*.pyc
 version = 1.0
 
 # (list) Application requirements
-# Dodano openpyxl, et_xmlfile oraz plyer do wyboru plików
 requirements = python3==3.11.7,hostpython3==3.11.7,kivy,sqlite3,openpyxl,et_xmlfile,plyer
 
 # (str) Supported orientations
@@ -35,11 +34,10 @@ orientation = portrait
 fullscreen = 0
 
 # (list) Permissions
-# Uprawnienia do odczytu i zapisu pamięci
 android.permissions = WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
-# (int) Target Android API
-android.api = 33
+# (int) Target Android API (zmieniono na 31, aby uniknąć błędów braku pakietu SDK)
+android.api = 31
 
 # (int) Minimum API your APK will support
 android.minapi = 21
