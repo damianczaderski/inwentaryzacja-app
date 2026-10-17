@@ -59,6 +59,7 @@ jobs:
       run: |
         pip install "pip<24.0"
         pip install Cython==3.0.11 buildozer
+        pip install --upgrade python-for-android
 
     - name: Manual Setup Android NDK r25b
       run: |
@@ -78,18 +79,17 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        # Zmieniono wersję na v47
-        key: ${{ runner.os }}-buildozer-v47-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        # Zmieniono wersję na v48
+        key: ${{ runner.os }}-buildozer-v48-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
     - name: Build with Buildozer
       run: |
-        # Agresywny watcher modyfikujący pliki natychmiastowo
+        # Agresywny watcher łatający pliki w tle
         (while true; do
           find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
           
-          # Wyłapywanie i łatwienie każdego pliku spinners.py
           find .buildozer/ -name "spinners.py" 2>/dev/null | while read file; do
             if ! grep -q "open_rich_spinner" "$file"; then
               echo "" >> "$file"
@@ -98,21 +98,15 @@ jobs:
             fi
           done
 
-          # Blokowanie pip install -U pip w plikach sh/build
-          find .buildozer/ -name "*.py" 2>/dev/null | while read file; do
-            if grep -q "pip install" "$file"; then
-              sed -i 's/pip install -U pip/true/g' "$file" || true
-              sed -i 's/pip install --upgrade pip/true/g' "$file" || true
-            fi
-          done
-          
-          sleep 0.001
+          sleep 0.01
         done) &
         WATCHER_PID=$!
 
         export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
         export PATH=$JAVA_HOME/bin:$PATH
 
+        # Usunięcie starego środowiska platformy, aby wymusić jego ponowne utworzenie z nowym p4a
+        rm -rf .buildozer/android/platform/python-for-android
         rm -rf bin/
 
         buildozer -v android debug
