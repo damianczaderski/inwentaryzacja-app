@@ -79,23 +79,31 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        # Zmieniono wersję na v43
-        key: ${{ runner.os }}-buildozer-v43-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        # Zmieniono wersję na v44, aby wymusić czysty start
+        key: ${{ runner.os }}-buildozer-v44-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
     - name: Build with Buildozer
       run: |
-        # Natychmiastowy watcher oparty na zdarzeniach systemowych inotify
-        mkdir -p .buildozer
+        # Agresywny watcher: neutralizuje próbę aktualizacji pip w locie oraz łatka dla spinnerów
         (while true; do
-          inotifywait -q -r -e create,modify .buildozer/ 2>/dev/null || sleep 0.05
+          find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
+          
+          # Neutralizacja pip install -U pip / --upgrade pip
+          find .buildozer/ -name "*.py" -exec grep -l "pip install" {} \; 2>/dev/null | while read file; do
+            sed -i 's/pip install -U pip/true/g' "$file" || true
+            sed -i 's/pip install --upgrade pip/true/g' "$file" || true
+          done
+
+          # Łatka dla open_rich_spinner
           find .buildozer/ -name "spinners.py" 2>/dev/null | while read file; do
             if ! grep -q "open_rich_spinner" "$file"; then
               echo "def open_rich_spinner(*args, **kwargs): return open_spinner(*args, **kwargs)" >> "$file"
             fi
           done
-          find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
+
+          sleep 0.05
         done) &
         WATCHER_PID=$!
 
