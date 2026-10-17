@@ -57,7 +57,8 @@ jobs:
 
     - name: Install Buildozer, Cython and compatible Pip
       run: |
-        pip install "pip<24.0"
+        # Wymuszenie starszej, w pełni kompatybilnej wersji pip
+        pip install "pip==23.3.1"
         pip install Cython==3.0.11 buildozer
 
     - name: Manual Setup Android NDK r25b
@@ -78,22 +79,17 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        # Zmieniono wersję na v39, aby wymusić czysty build z pipem < 24.0
-        key: ${{ runner.os }}-buildozer-v39-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        # Zmieniono wersję na v40, aby wymusić czysty start z nowym pipem
+        key: ${{ runner.os }}-buildozer-v40-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
     - name: Build with Buildozer
       run: |
-        # Agresywny watcher poprawiający pliki spinnerów od pierwszej sekundy
+        # Czyszczenie śmieci testowych w tle
         (while true; do
           find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
-          find .buildozer/ -name "spinners.py" 2>/dev/null | while read file; do
-            if ! grep -q "open_rich_spinner" "$file"; then
-              echo "def open_rich_spinner(*args, **kwargs): return open_spinner(*args, **kwargs)" >> "$file"
-            fi
-          done
-          sleep 0.1
+          sleep 2
         done) &
         WATCHER_PID=$!
 
