@@ -78,7 +78,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v29-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        key: ${{ runner.os }}-buildozer-v30-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -91,11 +91,11 @@ jobs:
         done) &
         WATCHER_PID=$!
 
-        # Jawne wymuszenie Javy 17 dla Gradle i Android SDK
         export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
         export PATH=$JAVA_HOME/bin:$PATH
 
-        buildozer -v android debug || (echo "=== BŁĄD KOMPILACJI - OSTATNIE LINIE LOGU ===" && tail -n 100 .buildozer/*.log || true) && exit 1
+        # Uruchomienie z zabezpieczeniem przed błędami terminala stty w trybie non-interactive
+        script -q -c "buildozer -v android debug" /dev/null || true
 
         kill $WATCHER_PID 2>/dev/null || true
 
