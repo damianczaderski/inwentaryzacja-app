@@ -25,7 +25,8 @@ source.exclude_patterns = license,images/*.jpg,*/test/*,*.pyc
 version = 1.0
 
 # (list) Application requirements
-requirements = python3==3.11.7,hostpython3==3.11.7,kivy,sqlite3
+# Dodano openpyxl oraz et_xmlfile do obsługi plików Excel
+requirements = python3==3.11.7,hostpython3==3.11.7,kivy,sqlite3,openpyxl,et_xmlfile
 
 # (str) Supported orientations
 orientation = portrait
@@ -34,6 +35,7 @@ orientation = portrait
 fullscreen = 0
 
 # (list) Permissions
+# Dodano uprawnienia do odczytu i zapisu pamięci (potrzebne do raportów Excel)
 android.permissions = WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
 # (int) Target Android API
@@ -50,9 +52,6 @@ android.archs = arm64-v8a
 
 # (bool) Automatically accept SDK license
 android.accept_sdk_license = True
-
-# BEZWGZGLĘDNE OMINIĘCIE BŁĘDÓW NAGŁÓWKÓW W CLANG (traktowanie błędów jako ostrzeżeń i ignorowanie cdefs)
-android.cflags = -Wno-error=implicit-int -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types
 
 [buildozer]
 
