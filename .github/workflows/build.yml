@@ -78,20 +78,21 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        # Zmieniono wersję na v34
-        key: ${{ runner.os }}-buildozer-v34-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        # Zmieniono wersję na v35, aby odrzucić stary cache
+        key: ${{ runner.os }}-buildozer-v35-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
     - name: Build with Buildozer
       run: |
-        # Inteligentny watcher w tle: czyści testy oraz automatycznie naprawia błąd open_rich_spinner w pip
+        # Zaawansowany watcher w tle: neutralizuje aktualizację pip powodującą błąd importu
         (while true; do
           find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
-          find .buildozer/ -name "*.py" -exec grep -l "open_rich_spinner" {} \; 2>/dev/null | while read file; do
-            sed -i 's/open_rich_spinner/open_spinner/g' "$file" || true
+          find .buildozer/ -name "*.py" -exec grep -l "pip install" {} \; 2>/dev/null | while read file; do
+            sed -i 's/pip install -U pip/echo "Skipping pip upgrade"/g' "$file" || true
+            sed -i 's/pip install --upgrade pip/echo "Skipping pip upgrade"/g' "$file" || true
           done
-          sleep 1
+          sleep 0.5
         done) &
         WATCHER_PID=$!
 
