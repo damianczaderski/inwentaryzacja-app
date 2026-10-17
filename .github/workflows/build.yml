@@ -78,7 +78,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v30-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        # Zmieniono wersję cache na v31, aby wymusić świeży build z nowym kodem
+        key: ${{ runner.os }}-buildozer-v31-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -94,8 +95,11 @@ jobs:
         export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
         export PATH=$JAVA_HOME/bin:$PATH
 
-        # Uruchomienie z zabezpieczeniem przed błędami terminala stty w trybie non-interactive
-        script -q -c "buildozer -v android debug" /dev/null || true
+        # Usunięcie starego folderu bin, żeby upewnić się, że powstaną nowe pliki
+        rm -rf bin/
+
+        # Uruchomienie budowania z wymuszeniem pakowania
+        buildozer -v android debug
 
         kill $WATCHER_PID 2>/dev/null || true
 
