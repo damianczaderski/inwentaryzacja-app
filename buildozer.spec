@@ -25,8 +25,8 @@ source.exclude_patterns = license,images/*.jpg,*/test/*,*.pyc
 version = 1.0
 
 # (list) Application requirements
-# Dodano openpyxl oraz et_xmlfile do obsługi plików Excel
-requirements = python3==3.11.7,hostpython3==3.11.7,kivy,sqlite3,openpyxl,et_xmlfile
+# Dodano openpyxl, et_xmlfile oraz plyer do wyboru plików
+requirements = python3==3.11.7,hostpython3==3.11.7,kivy,sqlite3,openpyxl,et_xmlfile,plyer
 
 # (str) Supported orientations
 orientation = portrait
@@ -35,7 +35,7 @@ orientation = portrait
 fullscreen = 0
 
 # (list) Permissions
-# Dodano uprawnienia do odczytu i zapisu pamięci (potrzebne do raportów Excel)
+# Uprawnienia do odczytu i zapisu pamięci
 android.permissions = WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
 # (int) Target Android API
