@@ -78,20 +78,19 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        # Zmieniono wersję na v41
-        key: ${{ runner.os }}-buildozer-v41-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        # Zmieniono wersję na v42
+        key: ${{ runner.os }}-buildozer-v42-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
     - name: Build with Buildozer
       run: |
-        # Niezawodny watcher: dodaje brakującą funkcję open_rich_spinner w locie
+        # Watcher neutralizuje aktualizację pip, zapobiegając jakimkolwiek błędom importu wyjątków
         (while true; do
           find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
-          find .buildozer/ -name "spinners.py" 2>/dev/null | while read file; do
-            if ! grep -q "open_rich_spinner" "$file"; then
-              echo "def open_rich_spinner(*args, **kwargs): return open_spinner(*args, **kwargs)" >> "$file"
-            fi
+          find .buildozer/ -name "*.py" -exec grep -l "pip install" {} \; 2>/dev/null | while read file; do
+            sed -i 's/pip install -U pip/true/g' "$file" || true
+            sed -i 's/pip install --upgrade pip/true/g' "$file" || true
           done
           sleep 0.1
         done) &
