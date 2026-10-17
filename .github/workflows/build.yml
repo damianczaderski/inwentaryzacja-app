@@ -78,25 +78,26 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        # Zmieniono wersję na v33, aby odrzucić stary, wadliwy cache
-        key: ${{ runner.os }}-buildozer-v33-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        # Zmieniono wersję na v34
+        key: ${{ runner.os }}-buildozer-v34-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
     - name: Build with Buildozer
       run: |
-        # Czyszczenie testów Pythona w tle, aby oszczędzić pamięć RAM
+        # Inteligentny watcher w tle: czyści testy oraz automatycznie naprawia błąd open_rich_spinner w pip
         (while true; do
           find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
-          sleep 2
+          find .buildozer/ -name "*.py" -exec grep -l "open_rich_spinner" {} \; 2>/dev/null | while read file; do
+            sed -i 's/open_rich_spinner/open_spinner/g' "$file" || true
+          done
+          sleep 1
         done) &
         WATCHER_PID=$!
 
         export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
         export PATH=$JAVA_HOME/bin:$PATH
 
-        # Usunięcie starego python-for-android z buildozera, jeśli tam jest, aby pobrał się najnowszy
-        rm -rf .buildozer/android/platform/python-for-android
         rm -rf bin/
 
         buildozer -v android debug
