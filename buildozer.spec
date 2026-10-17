@@ -24,8 +24,8 @@ source.exclude_patterns = license,images/*.jpg,*/test/*,*.pyc
 # (str) Application versioning
 version = 1.0
 
-# (list) Application requirements
-requirements = python3==3.11.7,hostpython3==3.11.7,kivy,sqlite3,openpyxl,et_xmlfile,plyer
+# (list) Application requirements (uproszczone, bez sztywnych wersji Pythona, co eliminuje błąd pip)
+requirements = python3,kivy,sqlite3,openpyxl,et_xmlfile,plyer
 
 # (str) Supported orientations
 orientation = portrait
@@ -36,7 +36,7 @@ fullscreen = 0
 # (list) Permissions
 android.permissions = WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
-# (int) Target Android API (zmieniono na 31, aby uniknąć błędów braku pakietu SDK)
+# (int) Target Android API
 android.api = 31
 
 # (int) Minimum API your APK will support
