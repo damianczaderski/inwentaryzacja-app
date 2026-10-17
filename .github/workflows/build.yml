@@ -78,7 +78,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .buildozer
-        key: ${{ runner.os }}-buildozer-v32-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
+        # Zmieniono wersję na v33, aby odrzucić stary, wadliwy cache
+        key: ${{ runner.os }}-buildozer-v33-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
         restore-keys: |
           ${{ runner.os }}-buildozer-
 
@@ -94,6 +95,8 @@ jobs:
         export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
         export PATH=$JAVA_HOME/bin:$PATH
 
+        # Usunięcie starego python-for-android z buildozera, jeśli tam jest, aby pobrał się najnowszy
+        rm -rf .buildozer/android/platform/python-for-android
         rm -rf bin/
 
         buildozer -v android debug
