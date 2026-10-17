@@ -59,7 +59,6 @@ jobs:
       run: |
         pip install "pip<24.0"
         pip install Cython==3.0.11 buildozer
-        pip install --upgrade python-for-android
 
     - name: Manual Setup Android NDK r25b
       run: |
@@ -75,40 +74,16 @@ jobs:
         rm -rf android-ndk
         mv android-ndk-r25b android-ndk
 
-    - name: Cache Buildozer directory
-      uses: actions/cache@v4
-      with:
-        path: .buildozer
-        # Zmieniono wersję na v49
-        key: ${{ runner.os }}-buildozer-v49-${{ hashFiles('buildozer.spec') }}-${{ hashFiles('.github/workflows/build.yml') }}
-        restore-keys: |
-          ${{ runner.os }}-buildozer-
-
     - name: Build with Buildozer
       run: |
-        # Watcher łatający pliki w tle
-        (while true; do
-          find .buildozer/ -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
-          find .buildozer/ -name "spinners.py" 2>/dev/null | while read file; do
-            if ! grep -q "open_rich_spinner" "$file"; then
-              echo "" >> "$file"
-              echo "def open_rich_spinner(*args, **kwargs):" >> "$file"
-              echo "    return open_spinner(*args, **kwargs)" >> "$file"
-            fi
-          done
-          sleep 0.01
-        done) &
-        WATCHER_PID=$!
-
         export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
         export PATH=$JAVA_HOME/bin:$PATH
 
         rm -rf bin/
+        rm -rf .buildozer/android/platform/python-for-android
 
-        # Uruchomienie buildozera z pełnym trybem debugowania (-d oraz log_level 2 w spec)
+        # Uruchomienie z pełnym debugowaniem i natychmiastowym zatrzymaniem w przypadku błędu
         buildozer -v --debug android debug
-
-        kill $WATCHER_PID 2>/dev/null || true
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
